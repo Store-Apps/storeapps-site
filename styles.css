@@ -515,6 +515,28 @@ h1 {
   align-items: center;
   flex-wrap: wrap;
 }
+.app-downloads {
+  display: grid;
+  gap: 18px;
+}
+.app-download-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.app-download-group h4 {
+  width: 85px;
+  flex: none;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 650;
+}
+.app-download-group .product-links {
+  gap: 8px;
+}
+.app-download-group .button {
+  padding-inline: 16px;
+}
 .subtle-link {
   display: inline-block;
   margin-top: 20px;
@@ -853,6 +875,11 @@ footer {
   }
 }
 @media (max-width: 1000px) {
+  .app-download-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
   .wrap {
     width: calc(100% - 48px);
   }
