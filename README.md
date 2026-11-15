@@ -42,3 +42,7 @@ Os selos das lojas são arquivos oficiais em português, sem alterações:
 - Google: https://play.google.com/intl/en_us/badges/static/images/badges/pt-br_badge_web_generic.png → `img/google-play-oficial.png`.
 
 Preservar a proporção e o espaço de proteção dos selos. As imagens ficam hospedadas no próprio site. A revisão da folha de estilos na URL deve ser atualizada quando o visual mudar, para evitar que o navegador conserve uma versão anterior.
+
+## Favicon
+
+O favicon usa o próprio símbolo fornecido, aproximado por um enquadramento SVG (`viewBox="150 130 950 950"`) sem redesenhar ou recolorir a arte. `img/storeapps-favicon-v2.svg` incorpora a imagem original; seus arquivos PNG de 16, 32, 48 e 180 px são renderizações desse enquadramento. `favicon.ico` reúne os tamanhos 16/32/48. As duas páginas referenciam os mesmos PNGs e o ICO versionado, para evitar o ícone antigo no cache da aba.
