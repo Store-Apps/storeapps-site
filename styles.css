@@ -126,9 +126,6 @@ summary:focus-visible {
   line-height: 1.05;
   text-decoration: none;
 }
-.brand img {
-  flex: none;
-}
 .brand small {
   display: block;
   font:
@@ -287,10 +284,6 @@ h1 {
   text-align: center;
   width: 220px;
 }
-.ecosystem-center > img {
-  display: block;
-  margin: 0 auto 12px;
-}
 .ecosystem-center > span {
   font-family: Rubik, sans-serif;
   display: block;
@@ -313,7 +306,7 @@ h1 {
   box-shadow: 0 16px 40px #0003;
 }
 .product-float img {
-  border-radius: 14px;
+  object-fit: contain;
 }
 .product-float strong {
   display: block;
@@ -328,12 +321,10 @@ h1 {
 .float-passenger {
   left: 12%;
   top: 0;
-  transform: rotate(-5deg);
 }
 .float-gamers {
   left: 1%;
   bottom: 0;
-  transform: rotate(-4deg);
 }
 .orbit-point {
   position: absolute;
@@ -445,18 +436,16 @@ h1 {
   color: #3f1c76;
 }
 .mobility-art .passenger-icon {
-  transform: rotate(-8deg);
   position: relative;
   left: -32px;
   z-index: 1;
-  border-radius: 26px;
+  object-fit: contain;
 }
 .mobility-art .driver-icon {
   position: absolute;
   top: 87px;
   left: calc(50% + 24px);
-  transform: rotate(10deg);
-  border-radius: 20px;
+  object-fit: contain;
   z-index: 2;
 }
 .route-line {
@@ -537,9 +526,21 @@ h1 {
   color: #1e4059;
 }
 .gaming-art > img {
-  border-radius: 28px;
-  transform: rotate(6deg);
-  box-shadow: 0 15px 35px #16426424;
+  object-fit: contain;
+}
+.product-copy .official-wordmark {
+  display: flex;
+  width: fit-content;
+  max-width: 100%;
+  padding: 10px 16px;
+  background: var(--ink);
+  border-radius: 8px;
+}
+.official-wordmark img {
+  display: block;
+  width: 200px;
+  height: auto;
+  object-fit: contain;
 }
 .game-grid {
   position: absolute;

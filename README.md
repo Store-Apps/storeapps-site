@@ -13,3 +13,14 @@ O site só mostra sucesso quando recebe HTTP de sucesso, `success: true` e um pr
 Para visualizar localmente: `python -m http.server 4180 --bind 127.0.0.1`. A API permite CORS de localhost para desenvolvimento. Não enviar formulários de teste para produção; usar interceptação no navegador ou o banco local de testes do Vumborala.
 
 Fonte Rubik distribuída com sua licença em `img/OFL-Rubik.txt`.
+
+## Artes oficiais
+
+As imagens são cópias diretas dos arquivos usados pelos aplicativos, sem redesenho ou alteração de cores:
+
+- `img/vumborala-oficial.png`: `vumboraLA/packages/shared/assets/images/passenger_mark.png`.
+- `img/vumborala-motorista-oficial.png`: `vumboraLA/packages/shared/assets/images/driver_mark.png`.
+- `img/vumborala-logo-oficial.png`: `vumboraLA/packages/shared/assets/images/logo_horizontal.png`.
+- `img/hubgamers-oficial.png`: `HUBGAMERS/apps/frontend/mobile/assets/images/hub_gamers_mark.png`.
+
+A StoreApps mantém a assinatura em texto do site original. Não usar símbolos inventados como identidade oficial. Um arquivo de marca da StoreApps deve ser fornecido para substituir essa assinatura por imagem.
