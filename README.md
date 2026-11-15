@@ -34,7 +34,7 @@ As imagens são cópias diretas dos arquivos usados pelos aplicativos, sem redes
 - `img/storeapps-logo-oficial.jpeg`: logo horizontal enviado pelo usuário em `WhatsApp Image 2026-08-27 at 11.14.01.jpeg`.
 - `img/storeapps-simbolo-oficial.jpeg`: símbolo enviado em `WhatsApp Image 2026-08-27 at 11.14.00 (1).jpeg`.
 
-O visual usa a paleta das imagens da StoreApps: azul-marinho `#040A28`, azul vivo `#0646ED`, ciano `#00BFF3`, branco e os tons coloridos do símbolo original. O logo horizontal aparece no cabeçalho, rodapé e página de privacidade. Não redesenhar a marca nem recolorir as artes fornecidas.
+O visual usa a paleta das imagens da StoreApps: azul-marinho `#040A28`, azul vivo `#0646ED`, ciano `#00BFF3`, branco e os tons coloridos do símbolo original. O cabeçalho fixo e a página de privacidade usam o símbolo original com uma assinatura textual clara sobre azul-marinho; o rodapé preserva o logo horizontal enviado. Não redesenhar o símbolo nem substituir as artes fornecidas. O espaçamento das âncoras compensa a altura do cabeçalho fixo em computador e celular.
 
 A apresentação principal integra a imagem original ao fundo com composição e máscara CSS, sem moldura quadrada. A malha e os caminhos de conexão são SVG/CSS decorativos. A animação dos sinais é desativada quando `prefers-reduced-motion` está ativo; os logos originais e seus arquivos não são modificados.
 
