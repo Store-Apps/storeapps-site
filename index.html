@@ -8,7 +8,7 @@
       name="description"
       content="Conheça a StoreApps Tecnologia, de Aracaju/SE. Desenvolvemos e operamos o VumboraLá e o HubGamers. Fale com nossa equipe e abra seu chamado pelo site."
     />
-    <meta name="theme-color" content="#131925" />
+    <meta name="theme-color" content="#040a28" />
     <meta
       property="og:title"
       content="StoreApps Tecnologia — ideias que viram conexões"
@@ -20,7 +20,11 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://storeapps.com.br/" />
     <link rel="canonical" href="https://storeapps.com.br/" />
-    <link rel="icon" href="data:," />
+    <link
+      rel="icon"
+      href="img/storeapps-simbolo-oficial.jpeg"
+      type="image/jpeg"
+    />
     <link
       rel="preload"
       href="img/Rubik.ttf"
@@ -28,7 +32,7 @@
       type="font/ttf"
       crossorigin
     />
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="styles.css?v=marca-azul-20261114" />
     <script src="site.js" defer></script>
   </head>
   <body>
@@ -39,8 +43,13 @@
           class="brand"
           href="#inicio"
           aria-label="StoreApps Tecnologia, início"
-          ><span>StoreApps<small>Tecnologia</small></span></a
-        >
+          ><img
+            class="storeapps-wordmark"
+            src="img/storeapps-logo-oficial.jpeg"
+            width="1600"
+            height="533"
+            alt="StoreApps Tecnologia"
+        /></a>
         <nav aria-label="Navegação principal">
           <a href="#empresa">A empresa</a><a href="#produtos">Nossos produtos</a
           ><a href="#contato" class="nav-contact">Fale com a gente</a>
@@ -54,7 +63,7 @@
             <p class="location">
               <span aria-hidden="true"></span> De Sergipe, para o seu dia a dia
             </p>
-            <h1 id="titulo">Boas ideias.<br />Conexões reais.</h1>
+            <h1 id="titulo">Tecnologia feita para conectar pessoas.</h1>
             <p class="hero-description">
               Criamos tecnologia para aproximar pessoas. Da próxima viagem à
               próxima partida, desenvolvemos aplicativos que fazem parte da
@@ -68,39 +77,38 @@
               >
             </div>
           </div>
-          <div
-            class="ecosystem"
-            aria-label="Produtos da StoreApps: VumboraLá e HubGamers"
-          >
-            <div class="orbit orbit-one"></div>
-            <div class="orbit orbit-two"></div>
-            <div class="ecosystem-center">
-              <span>StoreApps</span><small>Conectando possibilidades</small>
+          <div class="brand-showcase">
+            <img
+              class="brand-art"
+              src="img/storeapps-simbolo-oficial.jpeg"
+              width="1254"
+              height="1254"
+              alt="Símbolo oficial da StoreApps, com blocos coloridos em azul, ciano, verde, roxo e laranja"
+            />
+            <div class="brand-platforms">
+              <a href="#produtos"
+                ><img
+                  src="img/vumborala-oficial.png"
+                  width="46"
+                  height="46"
+                  alt=""
+                /><span
+                  ><strong>VumboraLá</strong
+                  ><small>Mobilidade e encomendas</small></span
+                ></a
+              >
+              <a href="#produtos"
+                ><img
+                  src="img/hubgamers-enviado.png"
+                  width="46"
+                  height="43"
+                  alt=""
+                /><span
+                  ><strong>HubGamers</strong
+                  ><small>Comunidade e jogos</small></span
+                ></a
+              >
             </div>
-            <div class="product-float float-passenger">
-              <img
-                src="img/vumborala-oficial.png"
-                width="64"
-                height="64"
-                alt=""
-              />
-              <div>
-                <strong>VumboraLá</strong><small>Seu próximo destino</small>
-              </div>
-            </div>
-            <div class="product-float float-gamers">
-              <img
-                src="img/hubgamers-oficial.png"
-                width="64"
-                height="64"
-                alt=""
-              />
-              <div>
-                <strong>HubGamers</strong><small>Sua comunidade no jogo</small>
-              </div>
-            </div>
-            <span class="orbit-point point-one"></span
-            ><span class="orbit-point point-two"></span>
           </div>
         </div>
         <div class="hero-foot">
@@ -204,44 +212,64 @@
               <div class="app-downloads">
                 <div class="app-download-group">
                   <h4>Passageiro</h4>
-                  <div class="product-links">
+                  <div class="store-badges">
                     <a
-                      class="button secondary"
-                      href="https://play.google.com/store/apps/details?id=br.com.vumborala.passenger"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="Baixar VumboraLá Passageiro no Google Play"
-                      >Google Play <span aria-hidden="true">↗</span></a
-                    >
-                    <a
-                      class="button dark"
+                      class="store-badge apple-badge"
                       href="https://apps.apple.com/br/app/vumborala/id6831323631"
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label="Baixar VumboraLá Passageiro na App Store"
-                      >App Store <span aria-hidden="true">↗</span></a
-                    >
+                      ><img
+                        src="img/app-store-oficial.svg"
+                        width="120"
+                        height="40"
+                        alt="Baixar na App Store"
+                        loading="lazy"
+                    /></a>
+                    <a
+                      class="store-badge google-badge"
+                      href="https://play.google.com/store/apps/details?id=br.com.vumborala.passenger"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Baixar VumboraLá Passageiro no Google Play"
+                      ><img
+                        src="img/google-play-oficial.png"
+                        width="646"
+                        height="250"
+                        alt="Disponível no Google Play"
+                        loading="lazy"
+                    /></a>
                   </div>
                 </div>
                 <div class="app-download-group">
                   <h4>Motorista</h4>
-                  <div class="product-links">
+                  <div class="store-badges">
                     <a
-                      class="button secondary"
-                      href="https://play.google.com/store/apps/details?id=br.com.vumborala.driver"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      aria-label="Baixar VumboraLá Motorista no Google Play"
-                      >Google Play <span aria-hidden="true">↗</span></a
-                    >
-                    <a
-                      class="button dark"
+                      class="store-badge apple-badge"
                       href="https://apps.apple.com/br/app/vumborala-motorista/id6831854412"
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label="Baixar VumboraLá Motorista na App Store"
-                      >App Store <span aria-hidden="true">↗</span></a
-                    >
+                      ><img
+                        src="img/app-store-oficial.svg"
+                        width="120"
+                        height="40"
+                        alt="Baixar na App Store"
+                        loading="lazy"
+                    /></a>
+                    <a
+                      class="store-badge google-badge"
+                      href="https://play.google.com/store/apps/details?id=br.com.vumborala.driver"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label="Baixar VumboraLá Motorista no Google Play"
+                      ><img
+                        src="img/google-play-oficial.png"
+                        width="646"
+                        height="250"
+                        alt="Disponível no Google Play"
+                        loading="lazy"
+                    /></a>
                   </div>
                 </div>
               </div>
@@ -254,9 +282,9 @@
             <div class="product-art gaming-art">
               <div class="game-grid" aria-hidden="true"></div>
               <img
-                src="img/hubgamers-oficial.png"
-                width="138"
-                height="138"
+                src="img/hubgamers-enviado.png"
+                width="180"
+                height="167"
                 loading="lazy"
                 alt="Ícone do HubGamers"
               />
@@ -264,7 +292,15 @@
             </div>
             <div class="product-copy">
               <span class="product-category">Comunidade e jogos</span>
-              <h3>HubGamers</h3>
+              <h3 class="hubgamers-title">
+                <img
+                  src="img/hubgamers-enviado.png"
+                  width="44"
+                  height="41"
+                  alt=""
+                  loading="lazy"
+                />HubGamers
+              </h3>
               <p>
                 Um ponto de encontro para quem vive os jogos. Perfis, feed,
                 clãs, lobbies e integração com a FACEIT aproximam jogadores e
@@ -274,7 +310,7 @@
                 <span>Comunidade</span><span>Clãs e lobbies</span
                 ><span>Perfis de jogadores</span>
               </div>
-              <div class="product-links">
+              <div class="product-links hubgamers-downloads">
                 <a
                   class="button dark"
                   href="https://hubgamers.com.br"
@@ -282,12 +318,18 @@
                   rel="noopener noreferrer"
                   >Conheça o HubGamers <span aria-hidden="true">↗</span></a
                 ><a
-                  class="inline-link"
+                  class="store-badge google-badge"
                   href="https://play.google.com/store/apps/details?id=app.hubgamers.mobile"
                   target="_blank"
                   rel="noopener noreferrer"
-                  >Google Play <span aria-hidden="true">↗</span></a
-                >
+                  aria-label="Baixar HubGamers no Google Play"
+                  ><img
+                    src="img/google-play-oficial.png"
+                    width="646"
+                    height="250"
+                    alt="Disponível no Google Play"
+                    loading="lazy"
+                /></a>
               </div>
               <a
                 class="subtle-link"
@@ -557,8 +599,14 @@
     <footer>
       <div class="wrap footer-top">
         <a class="brand" href="#inicio"
-          ><span>StoreApps<small>Tecnologia</small></span></a
-        >
+          ><img
+            class="storeapps-wordmark"
+            src="img/storeapps-logo-oficial.jpeg"
+            width="1600"
+            height="533"
+            alt="StoreApps Tecnologia"
+            loading="lazy"
+        /></a>
         <p>Ideias que viram conexões.</p>
         <a href="privacidade.html">Privacidade</a><a href="#contato">Contato</a>
       </div>

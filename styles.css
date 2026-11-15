@@ -6,12 +6,14 @@
 }
 :root {
   color-scheme: light;
-  --ink: #131925;
-  --muted: #535e70;
-  --yellow: #ffc800;
+  --ink: #07143e;
+  --muted: #536584;
+  --accent: #0646ed;
+  --cyan: #00bff3;
+  --navy: #040a28;
   --paper: #fff;
-  --soft: #f4f6f9;
-  --line: #dde2ea;
+  --soft: #f2f6ff;
+  --line: #dae4f5;
   font-family:
     system-ui,
     -apple-system,
@@ -78,7 +80,7 @@ p {
 a:focus-visible,
 button:focus-visible,
 summary:focus-visible {
-  outline: 3px solid #7d51df;
+  outline: 3px solid var(--cyan);
   outline-offset: 5px;
 }
 .wrap {
@@ -96,19 +98,21 @@ summary:focus-visible {
 }
 .skip-link {
   position: fixed;
-  top: -80px;
+  top: 0;
+  transform: translateY(-150%);
   left: 16px;
   z-index: 10;
-  background: var(--yellow);
+  background: var(--accent);
+  color: #fff;
   padding: 10px 20px;
 }
 .skip-link:focus {
-  top: 12px;
+  transform: translateY(12px);
 }
 .header {
-  background: var(--ink);
-  color: #fff;
-  border-bottom: 1px solid #ffffff1c;
+  background: #f7f7f7;
+  color: var(--ink);
+  border-bottom: 1px solid var(--line);
 }
 .header-inner {
   min-height: 88px;
@@ -125,6 +129,11 @@ summary:focus-visible {
   font-weight: 650;
   line-height: 1.05;
   text-decoration: none;
+}
+.brand .storeapps-wordmark {
+  display: block;
+  width: 246px;
+  height: auto;
 }
 .brand small {
   display: block;
@@ -143,25 +152,25 @@ summary:focus-visible {
 }
 .header nav a {
   text-decoration: none;
-  color: #e2e5ec;
+  color: var(--ink);
 }
 .header nav .nav-contact {
-  border: 1px solid #647083;
+  border: 1px solid #b8c8ec;
   padding: 10px 17px;
   border-radius: 8px;
 }
 .hero {
-  background: var(--ink);
+  background: linear-gradient(150deg, #040a28 25%, #071d75 70%, #0646ed 100%);
   color: #fff;
   overflow: hidden;
 }
 .hero-grid {
   display: grid;
-  grid-template-columns: 1.1fr 1fr;
+  grid-template-columns: 1fr 1fr;
   align-items: center;
   gap: 36px;
   min-height: 590px;
-  padding-block: 65px;
+  padding-block: 48px;
 }
 .location {
   display: flex;
@@ -175,17 +184,17 @@ summary:focus-visible {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: var(--yellow);
+  background: var(--cyan);
 }
 h1 {
-  font-size: clamp(44px, 5.3vw, 68px);
+  font-size: clamp(44px, 5vw, 66px);
   line-height: 1.07;
   font-weight: 600;
   letter-spacing: -2.6px;
   margin-bottom: 27px;
 }
 .hero-description {
-  color: #c2cad8;
+  color: #d4def8;
   font-size: 18px;
   max-width: 450px;
   margin-bottom: 32px;
@@ -211,11 +220,18 @@ h1 {
   text-decoration: none;
 }
 .primary {
-  background: var(--yellow);
-  color: var(--ink);
+  background: var(--accent);
+  color: #fff;
 }
 .primary:hover {
-  background: #ffda4d;
+  background: #0039c8;
+}
+.hero .primary {
+  background: #fff;
+  color: #073cc4;
+}
+.hero .primary:hover {
+  background: #e5f4ff;
 }
 .dark {
   background: var(--ink);
@@ -241,7 +257,8 @@ h1 {
 .hero-foot {
   border-top: 1px solid #ffffff1c;
   padding: 20px 0;
-  color: #c4ccdb;
+  color: #e4ecff;
+  background: #030c3466;
   font-size: 13px;
 }
 .hero-foot .wrap {
@@ -251,96 +268,51 @@ h1 {
 }
 .hero-foot span::before {
   content: "+";
-  color: var(--yellow);
+  color: var(--cyan);
   font-size: 17px;
   margin-right: 12px;
 }
-.ecosystem {
-  height: 425px;
-  position: relative;
-  isolation: isolate;
+.brand-showcase {
+  min-width: 0;
+  width: 100%;
+  max-width: 510px;
+  justify-self: end;
 }
-.orbit {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  border: 1px solid #ffffff16;
-  border-radius: 50%;
-  transform: translate(-50%, -50%) rotate(-22deg);
-}
-.orbit-one {
-  width: 420px;
-  height: 310px;
-}
-.orbit-two {
-  width: 500px;
-  height: 420px;
-}
-.ecosystem-center {
-  position: absolute;
-  left: 50%;
-  top: 49%;
-  transform: translate(-50%, -50%);
-  text-align: center;
-  width: 220px;
-}
-.ecosystem-center > span {
-  font-family: Rubik, sans-serif;
+.brand-art {
   display: block;
-  font-size: 25px;
-  font-weight: 550;
+  width: 100%;
+  height: auto;
+  border-radius: 22px;
+  border: 1px solid #294486;
 }
-.ecosystem-center > small {
-  font-size: 11px;
-  color: #b5bed0;
+.brand-platforms {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 14px;
 }
-.product-float {
-  position: absolute;
+.brand-platforms a {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 17px 22px;
-  border: 1px solid #465269;
-  background: #202b3d;
-  border-radius: 16px;
-  box-shadow: 0 16px 40px #0003;
+  gap: 10px;
+  padding: 13px 14px;
+  border: 1px solid #4564a5;
+  border-radius: 12px;
+  background: #071744b3;
+  text-decoration: none;
 }
-.product-float img {
+.brand-platforms img {
+  flex: none;
   object-fit: contain;
 }
-.product-float strong {
+.brand-platforms strong {
   display: block;
-  font-size: 15px;
+  font-size: 14px;
 }
-.product-float small {
+.brand-platforms small {
   display: block;
-  font-size: 11px;
-  color: #c4ccdb;
-  white-space: nowrap;
-}
-.float-passenger {
-  left: 12%;
-  top: 0;
-}
-.float-gamers {
-  left: 1%;
-  bottom: 0;
-}
-.orbit-point {
-  position: absolute;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--yellow);
-}
-.point-one {
-  left: 6%;
-  top: 42%;
-}
-.point-two {
-  right: 13%;
-  bottom: 4%;
-  background: #9872e8;
+  color: #c8dcff;
+  font-size: 10px;
 }
 .company-grid {
   display: grid;
@@ -432,8 +404,8 @@ h1 {
   margin: 26px 0 0;
 }
 .mobility-art {
-  background: #eee6fc;
-  color: #3f1c76;
+  background: #eaf0ff;
+  color: #0c2f87;
 }
 .mobility-art .passenger-icon {
   position: relative;
@@ -451,7 +423,7 @@ h1 {
 .route-line {
   width: 330px;
   height: 230px;
-  border: 2px dashed #bea6e3;
+  border: 2px dashed #a8c3fa;
   border-radius: 50%;
   position: absolute;
   top: 32px;
@@ -462,7 +434,7 @@ h1 {
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background: #7139bc;
+  background: var(--accent);
   position: absolute;
   top: 28px;
   left: 39px;
@@ -472,13 +444,13 @@ h1 {
   bottom: 24px;
   left: auto;
   right: 40px;
-  background: var(--yellow);
+  background: var(--cyan);
 }
 .route-line i:nth-child(3) {
   top: auto;
   bottom: -6px;
   left: 140px;
-  background: #c2a6eb;
+  background: #88b8ff;
 }
 .product-copy {
   padding: 44px 46px;
@@ -544,11 +516,51 @@ h1 {
   font-size: 12px;
 }
 .gaming-art {
-  background: #e2edf4;
-  color: #1e4059;
+  background: #061541;
+  color: #fff;
 }
 .gaming-art > img {
   object-fit: contain;
+  width: 180px;
+}
+.hubgamers-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.hubgamers-title img {
+  flex: none;
+  object-fit: contain;
+}
+.store-badges {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.store-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 64px;
+  flex: none;
+}
+.store-badge img {
+  display: block;
+  width: auto;
+  object-fit: contain;
+}
+.apple-badge {
+  padding: 12px 0;
+}
+.apple-badge img {
+  height: 40px;
+}
+.google-badge img {
+  height: 52px;
+}
+.hubgamers-downloads {
+  gap: 24px;
 }
 .product-copy .official-wordmark {
   display: flex;
@@ -590,7 +602,8 @@ h1 {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--yellow);
+  background: #e7efff;
+  color: #0646d9;
   width: 34px;
   height: 34px;
   border-radius: 50%;
@@ -608,7 +621,7 @@ h1 {
   margin-bottom: 0;
 }
 .contact {
-  background: #edf1f6;
+  background: linear-gradient(145deg, #040a28, #092573 70%, #0847db);
 }
 .contact-grid {
   display: grid;
@@ -618,10 +631,14 @@ h1 {
 }
 .contact-copy {
   padding-top: 16px;
+  color: #fff;
+}
+.contact-copy .section-label {
+  color: #7fdfff;
 }
 .contact-copy > p:not(.section-label) {
   font-size: 16px;
-  color: var(--muted);
+  color: #d4e1fc;
 }
 .contact-steps {
   list-style: none;
@@ -640,7 +657,8 @@ h1 {
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid #bac4d3;
+  border: 1px solid #6b95e5;
+  background: #14439655;
   min-width: 25px;
   height: 25px;
   border-radius: 50%;
@@ -648,14 +666,14 @@ h1 {
   font-weight: 650;
 }
 .email-contact {
-  border-top: 1px solid #d1d9e4;
+  border-top: 1px solid #5271ad;
   padding-top: 24px;
   display: grid;
   gap: 4px;
 }
 .email-contact > span {
   font-size: 13px;
-  color: var(--muted);
+  color: #c3d4f8;
 }
 .email-contact > a {
   font-size: 17px;
@@ -718,7 +736,7 @@ textarea::placeholder {
 input:focus,
 textarea:focus,
 select:focus {
-  outline: 2px solid #6a3abb;
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 textarea {
@@ -747,7 +765,7 @@ textarea {
   min-width: 16px;
   width: 16px;
   height: 16px;
-  accent-color: #6332a2;
+  accent-color: var(--accent);
 }
 .submit {
   width: 100%;
@@ -802,7 +820,7 @@ textarea {
     600 32px Rubik,
     sans-serif;
   margin: 24px 0;
-  color: #4f258c;
+  color: var(--accent);
 }
 .receipt-actions {
   display: flex;
@@ -840,8 +858,8 @@ textarea {
   padding-right: 25px;
 }
 footer {
-  background: var(--ink);
-  color: #fff;
+  background: #f7f7f7;
+  color: var(--ink);
   padding: 40px 0 30px;
 }
 .footer-top {
@@ -849,15 +867,15 @@ footer {
   align-items: center;
   gap: 30px;
   padding-bottom: 30px;
-  border-bottom: 1px solid #ffffff26;
+  border-bottom: 1px solid var(--line);
 }
 .footer-top p {
   font-size: 13px;
-  color: #b8c2d3;
+  color: var(--muted);
   margin: 0 auto 0 8px;
 }
 .footer-top > a:not(.brand) {
-  color: #d0d7e3;
+  color: var(--ink);
   font-size: 13px;
   text-decoration: none;
 }
@@ -867,7 +885,7 @@ footer {
   gap: 24px;
   padding-top: 24px;
   font-size: 11px;
-  color: #b8c2d3;
+  color: var(--muted);
 }
 @media (min-width: 1400px) {
   .hero-grid {
@@ -885,10 +903,6 @@ footer {
   }
   .hero-grid {
     gap: 10px;
-  }
-  .ecosystem {
-    transform: scale(0.86);
-    transform-origin: center right;
   }
   .hero-copy {
     position: relative;
@@ -946,8 +960,9 @@ footer {
     font-size: 19px;
     gap: 8px;
   }
-  .brand img {
-    width: 30px;
+  .brand .storeapps-wordmark {
+    width: 176px;
+    height: auto;
   }
   .brand small {
     font-size: 9px;
@@ -969,31 +984,6 @@ footer {
   .hero-description {
     font-size: 16px;
     max-width: 500px;
-  }
-  .ecosystem {
-    width: min(450px, 100%);
-    height: 340px;
-    transform: scale(0.83);
-    transform-origin: center center;
-    margin: 4px auto -26px;
-  }
-  .orbit-one {
-    width: 380px;
-    height: 260px;
-  }
-  .orbit-two {
-    width: 430px;
-    height: 340px;
-  }
-  .float-passenger {
-    left: 12%;
-  }
-  .float-gamers {
-    left: 0;
-    bottom: 0;
-  }
-  .product-float {
-    padding: 13px 17px;
   }
   .hero-foot .wrap {
     display: grid;
@@ -1132,11 +1122,6 @@ footer {
   .actions {
     gap: 19px;
   }
-  .ecosystem {
-    transform: scale(0.73);
-    margin-left: -8px;
-    margin-right: -8px;
-  }
   .footer-top p {
     width: 100%;
   }
@@ -1159,5 +1144,48 @@ footer {
   .form-row {
     grid-template-columns: 1fr;
     gap: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  .brand-showcase {
+    max-width: 450px;
+    justify-self: center;
+    margin-top: 16px;
+  }
+  .brand-art {
+    width: 100%;
+  }
+  .hero-grid {
+    padding-block: 40px;
+    gap: 22px;
+  }
+  .footer-top .brand .storeapps-wordmark {
+    width: 210px;
+  }
+  .footer-top p {
+    width: 100%;
+  }
+  .app-download-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+}
+@media (max-width: 380px) {
+  .brand .storeapps-wordmark {
+    width: 160px;
+  }
+  .brand-platforms {
+    grid-template-columns: 1fr;
+  }
+  .brand-platforms a {
+    padding: 12px 16px;
+  }
+  .store-badges {
+    gap: 12px;
+  }
+  .hero-copy h1 {
+    font-size: 42px;
   }
 }
