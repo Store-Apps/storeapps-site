@@ -14,6 +14,15 @@ Para visualizar localmente: `python -m http.server 4180 --bind 127.0.0.1`. A API
 
 Fonte Rubik distribuída com sua licença em `img/OFL-Rubik.txt`.
 
+## Links para iPhone e iPad
+
+Os dois aplicativos VumboraLá estão na App Store. Links confirmados na API pública da Apple pelo bundle ID e pelo vendedor STOREAPPS TECNOLOGIA LTDA:
+
+- Passageiro (`br.com.vumborala.passenger`): https://apps.apple.com/br/app/vumborala/id6831323631
+- Motorista (`br.com.vumborala.driver`): https://apps.apple.com/br/app/vumborala-motorista/id6831854412
+
+Cada aplicativo apresenta seus próprios botões Google Play e App Store no site.
+
 ## Artes oficiais
 
 As imagens são cópias diretas dos arquivos usados pelos aplicativos, sem redesenho ou alteração de cores:
