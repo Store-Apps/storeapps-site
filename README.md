@@ -36,6 +36,8 @@ As imagens são cópias diretas dos arquivos usados pelos aplicativos, sem redes
 
 O visual usa a paleta das imagens da StoreApps: azul-marinho `#040A28`, azul vivo `#0646ED`, ciano `#00BFF3`, branco e os tons coloridos do símbolo original. O logo horizontal aparece no cabeçalho, rodapé e página de privacidade. Não redesenhar a marca nem recolorir as artes fornecidas.
 
+A apresentação principal integra a imagem original ao fundo com composição e máscara CSS, sem moldura quadrada. A malha e os caminhos de conexão são SVG/CSS decorativos. A animação dos sinais é desativada quando `prefers-reduced-motion` está ativo; os logos originais e seus arquivos não são modificados.
+
 Os selos das lojas são arquivos oficiais em português, sem alterações:
 
 - Apple: https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/pt-br → `img/app-store-oficial.svg`.
