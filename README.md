@@ -23,6 +23,8 @@ Os dois aplicativos VumboraLá estão na App Store. Links confirmados na API pú
 
 Cada aplicativo apresenta seus próprios botões Google Play e App Store no site.
 
+A seção é apresentada como **Nossas plataformas**, com blocos abertos sobre azul-marinho. As marcas VumboraLá e HubGamers aparecem sem cards ou molduras, mantendo os selos oficiais e os links separados por aplicativo. O endereço `#produtos` permanece para compatibilidade com links existentes.
+
 ## Artes oficiais
 
 As imagens são cópias diretas dos arquivos usados pelos aplicativos, sem redesenho ou alteração de cores:
