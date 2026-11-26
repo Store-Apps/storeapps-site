@@ -67,6 +67,8 @@ $nova = $null
 Write-Host ""
 Write-Host "3) GitHub Actions (token da conta bruno-storeapps)" -ForegroundColor Cyan
 Gravar 'GITHUB_STATUS_TOKEN' (gh auth token --user bruno-storeapps)
+# O repositório do Oxe (BrunoCarvalhoSI/oxe-sushi) fica na outra conta do gh.
+Gravar 'GITHUB_STATUS_TOKEN_OXE' (gh auth token --user BrunoCarvalhoSI)
 
 Write-Host ""
 Write-Host "4) Chaves que só você tem (cole quando pedir)" -ForegroundColor Cyan
