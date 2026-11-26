@@ -50,3 +50,12 @@ Preservar a proporção e o espaço de proteção dos selos. As imagens ficam ho
 ## Favicon
 
 O favicon usa o próprio símbolo fornecido, aproximado por um enquadramento SVG (`viewBox="150 130 950 950"`) sem redesenhar ou recolorir a arte. `img/storeapps-favicon-v2.svg` incorpora a imagem original; seus arquivos PNG de 16, 32, 48 e 180 px são renderizações desse enquadramento. `favicon.ico` reúne os tamanhos 16/32/48. As duas páginas referenciam os mesmos PNGs e o ICO versionado, para evitar o ícone antigo no cache da aba.
+
+## Status dos serviços (`/services`)
+
+`services/index.html` mostra a situação de todos os produtos (StoreApps, VumboraLá e a homologação dele, Hub Gamers, Oxe Sushi, Querido Delivery), no estilo das páginas de status: totais, busca, grupos por produto e 90 dias de barras por serviço. Ela só lê o JSON do verificador.
+
+O verificador é o Cloudflare Worker `storeapps-status` (pasta `status-worker/`): a cada 5 minutos bate em cada serviço de `status-worker/src/servicos.js`, guarda o estado atual e o resumo de cada dia (90 dias) no KV e responde `GET /status` (sem URLs: a página pública só recebe nome e estado). Homologação marcada `sobDemanda` fora do ar aparece como **desligada**, não como offline.
+
+- Incluir ou tirar um serviço: editar `status-worker/src/servicos.js` e publicar com `cd status-worker && npx wrangler@4 deploy` (conta StoreApps na Cloudflare).
+- Endereço atual do verificador: `https://storeapps-status.hubgamers-admin.workers.dev/status` (constante `STATUS_URL` na página).
