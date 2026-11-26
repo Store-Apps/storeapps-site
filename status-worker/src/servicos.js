@@ -9,6 +9,8 @@
 // esperado.json   : campos que o JSON precisa ter, com o valor
 // esperado.texto  : trecho que a resposta precisa conter
 // degradado.json  : campos que, se baterem, contam como "degradado"
+// frescor         : { caminho, degradadoHoras, foraHoras }: data no JSON (ex.: a última
+//                   notícia); mais velha que isso = degradado / offline (worker parado)
 // dependeDe       : id de outro serviço; se ele está desligado, este também está
 //                   (painel atrás do Cloudflare Access responde mesmo com a máquina desligada)
 
@@ -48,6 +50,7 @@ export const SERVICOS = [
   { id: 'hubgamers-api', grupo: 'hubgamers', nome: 'API', url: 'https://api.hubgamers.com.br/v1/health', esperado: { status: [200], json: { status: 'ok' } } },
   // /ready responde 200 até quando degradado: quem decide é o campo status.
   { id: 'hubgamers-api-dados', grupo: 'hubgamers', nome: 'Banco e cache da API', url: 'https://api.hubgamers.com.br/v1/health/ready', esperado: { status: [200], json: { status: 'ok' } }, degradado: { json: { status: 'degraded' } } },
+  { id: 'hubgamers-crawler', grupo: 'hubgamers', nome: 'Crawler de notícias', url: 'https://api.hubgamers.com.br/v1/news?limit=1', esperado: { status: [200] }, frescor: { caminho: 'items.0.published_at', degradadoHoras: 12, foraHoras: 24 } },
   { id: 'hubgamers-admin', grupo: 'hubgamers', nome: 'Painel administrativo', url: 'https://admin.hubgamers.com.br/', esperado: { status: [200, 307, 308] } },
   { id: 'hubgamers-extensao', grupo: 'hubgamers', nome: 'Download da extensão Match Lens', url: 'https://hubgamers.com.br/downloads/extension.json', esperado: { status: [200], texto: '"version"' } },
   // Bucket R2 público sem página inicial: 404 do R2 = bucket respondendo.

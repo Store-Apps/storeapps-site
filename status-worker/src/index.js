@@ -36,7 +36,7 @@ async function verificar(s) {
       cf: { cacheTtl: 0, cacheEverything: false },
     });
     codigo = r.status;
-    const precisaCorpo = s.esperado.json || s.esperado.texto || s.degradado;
+    const precisaCorpo = s.esperado.json || s.esperado.texto || s.degradado || s.frescor;
     const corpo = precisaCorpo ? await r.text() : (r.body?.cancel(), '');
     const ms = Date.now() - inicio;
 
@@ -59,6 +59,19 @@ async function verificar(s) {
     }
     if (s.esperado.texto && !corpo.includes(s.esperado.texto)) {
       return { estado: 'offline', codigo, ms, detalhe: 'conteúdo inesperado' };
+    }
+    if (s.frescor) {
+      let valor = null;
+      try {
+        valor = s.frescor.caminho.split('.').reduce((o, k) => (o == null ? o : o[k]), JSON.parse(corpo));
+      } catch { valor = null; }
+      const quando = valor ? Date.parse(valor) : NaN;
+      if (!Number.isFinite(quando)) return { estado: 'offline', codigo, ms, detalhe: 'sem data do último item' };
+      const horas = (Date.now() - quando) / 3_600_000;
+      const ha = horas < 1 ? 'há menos de 1 h' : `há ${Math.round(horas)} h`;
+      if (horas >= s.frescor.foraHoras) return { estado: 'offline', codigo, ms, detalhe: `último item ${ha}` };
+      if (horas >= s.frescor.degradadoHoras) return { estado: 'degradado', codigo, ms, detalhe: `último item ${ha}` };
+      return { estado: 'operacional', codigo, ms, detalhe: `último item ${ha}` };
     }
     if (ms > LENTO_MS) return { estado: 'degradado', codigo, ms, detalhe: 'lento' };
     return { estado: 'operacional', codigo, ms, detalhe };
