@@ -1,4 +1,4 @@
-# Cadastra no Worker storeapps-status as chaves das checagens de saldo e conta.
+﻿# Cadastra no Worker storeapps-status as chaves das checagens de saldo e conta.
 # Rodar no PowerShell, dentro desta pasta:   .\configurar-segredos.ps1
 #
 # Nada é mostrado na tela: cada valor vai direto para `wrangler secret put`.
@@ -11,7 +11,7 @@ $env:AWS_PROFILE = 'vumborala'
 $regiao = 'sa-east-1'
 
 function Gravar([string]$nome, [string]$valor) {
-  if ([string]::IsNullOrWhiteSpace($valor)) { Write-Host "  - $nome: sem valor, pulado" -ForegroundColor Yellow; return }
+  if ([string]::IsNullOrWhiteSpace($valor)) { Write-Host "  - ${nome}: sem valor, pulado" -ForegroundColor Yellow; return }
   $valor | npx --yes wrangler@4 secret put $nome | Out-Null
   Write-Host "  ok $nome" -ForegroundColor Green
 }
@@ -44,12 +44,20 @@ Write-Host ""
 Write-Host "2) Chave AWS só de leitura das máquinas (EC2)" -ForegroundColor Cyan
 $usuario = 'storeapps-status-leitura'
 $politica = '{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":["ec2:DescribeInstanceStatus","ec2:DescribeInstances"],"Resource":"*"}]}'
-aws iam get-user --user-name $usuario 2>$null | Out-Null
+# cmd /c: no Windows PowerShell, aviso no stderr com $ErrorActionPreference=Stop derrubaria o script.
+cmd /c "aws iam get-user --user-name $usuario >nul 2>nul"
 if ($LASTEXITCODE -ne 0) { aws iam create-user --user-name $usuario --tags Key=uso,Value=storeapps-status | Out-Null }
-aws iam put-user-policy --user-name $usuario --policy-name SoLerEstadoDasMaquinas --policy-document $politica
+# A política vai por arquivo: passada direto, o Windows PowerShell tira as aspas do JSON.
+$arquivoPolitica = Join-Path $env:TEMP 'storeapps-status-politica.json'
+[IO.File]::WriteAllText($arquivoPolitica, $politica)
+aws iam put-user-policy --user-name $usuario --policy-name SoLerEstadoDasMaquinas --policy-document "file://$arquivoPolitica"
+Remove-Item $arquivoPolitica
 # Uma chave por vez: as antigas saem antes de criar a nova.
-foreach ($k in (aws iam list-access-keys --user-name $usuario --query 'AccessKeyMetadata[].AccessKeyId' --output text).Split("`t ", [StringSplitOptions]::RemoveEmptyEntries)) {
-  aws iam delete-access-key --user-name $usuario --access-key-id $k
+$antigas = aws iam list-access-keys --user-name $usuario --query 'AccessKeyMetadata[].AccessKeyId' --output text
+if ($antigas) {
+  foreach ($k in "$antigas".Split("`t ", [StringSplitOptions]::RemoveEmptyEntries)) {
+    if ($k -ne 'None') { aws iam delete-access-key --user-name $usuario --access-key-id $k }
+  }
 }
 $nova = aws iam create-access-key --user-name $usuario --output json | ConvertFrom-Json
 Gravar 'AWS_STATUS_KEY_ID' $nova.AccessKey.AccessKeyId
