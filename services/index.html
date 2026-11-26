@@ -88,6 +88,8 @@
       .search input:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
       .search svg { position: absolute; left: 15px; top: 50%; translate: 0 -50%; color: var(--muted); }
       .groups { display: grid; gap: 14px; }
+      .sec { font-family: var(--f-display); font-weight: 600; font-size: 1.1rem; margin: 18px 0 0; display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; }
+      .sec span { font-family: var(--f-body); font-weight: 400; font-size: 0.84rem; color: var(--muted); }
       details.group { background: var(--panel); border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
       details.group > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: var(--panel-2); }
       details.group > summary::-webkit-details-marker { display: none; }
@@ -139,7 +141,7 @@
         <div class="tile"><span class="k">Operacional</span><span class="v ok" id="n-ok">–</span></div>
         <div class="tile"><span class="k">Degradado</span><span class="v warn" id="n-warn">–</span></div>
         <div class="tile"><span class="k">Offline</span><span class="v down" id="n-down">–</span></div>
-        <div class="tile"><span class="k">Desligado sob demanda</span><span class="v off" id="n-off">–</span></div>
+        <div class="tile"><span class="k">Homologação ligada</span><span class="v off" id="n-off">–</span></div>
       </div>
 
       <label class="search" for="busca">
@@ -168,8 +170,10 @@
       (function () {
         // Endereço do verificador (Cloudflare Worker storeapps-status).
         var STATUS_URL = "https://storeapps-status.hubgamers-admin.workers.dev/status";
-        var LOGOS = { vumborala: "../img/vumborala-oficial.png", "vumborala-hml": "../img/vumborala-oficial.png", hubgamers: "../img/hubgamers-oficial.png", storeapps: "../img/storeapps-favicon-v2.svg" };
-        var INICIAIS = { oxe: ["OX", "#c2410c"], querido: ["QD", "#d9363e"] };
+        var LOGOS = { vumborala: "../img/status/vumborala.png", "vumborala-hml": "../img/status/vumborala-hml.png", hubgamers: "../img/hubgamers-oficial.png", storeapps: "../img/storeapps-favicon-v2.svg", oxe: "../img/status/oxe-sushi.png" };
+        var INICIAIS = { querido: ["QD", "#d9363e"] };
+        // Homologação liga só para testar: fica numa seção à parte e não entra nos totais.
+        function ehHml(g) { return /-hml$/.test(g.id) || g.servicos.every(function (s) { return s.sobDemanda; }); }
         var NOMES = { operacional: "Operacional", degradado: "Degradado", offline: "Offline", desligado: "Desligado" };
         var CLASSE = { operacional: "ok", degradado: "warn", offline: "down", desligado: "off" };
         var ICONE = {
@@ -216,22 +220,28 @@
         function render() {
           if (!dados) return;
           var termo = elBusca.value.trim().toLowerCase();
-          var n = { ok: 0, warn: 0, down: 0, off: 0 }, total = 0;
+          var n = { ok: 0, warn: 0, down: 0, off: 0 }, total = 0, faltam = 0;
           var nd = quantosDias();
           var hoje = new Date();
           var chaves = [];
           for (var i = nd - 1; i >= 0; i--) chaves.push(diaBR(new Date(hoje.getTime() - i * 86400000)));
-          var html = "";
-          dados.grupos.forEach(function (g) {
+          var html = "", hmlAberto = false;
+          var ordem = dados.grupos.filter(function (g) { return !ehHml(g); }).concat(dados.grupos.filter(ehHml));
+          ordem.forEach(function (g) {
             var lista = g.servicos.filter(function (s) {
               return !termo || s.nome.toLowerCase().indexOf(termo) >= 0 || g.nome.toLowerCase().indexOf(termo) >= 0;
             });
-            g.servicos.forEach(function (s) {
+            if (!ehHml(g)) g.servicos.forEach(function (s) {
+              if (s.atual && s.atual.naoConfigurado) { faltam++; return; }
               total++;
               var c = s.atual ? CLASSE[s.atual.estado] : "off";
               n[c]++;
             });
             if (!lista.length) return;
+            if (ehHml(g) && !hmlAberto) {
+              hmlAberto = true;
+              html += '<h2 class="sec">Homologação <span>liga só quando a equipe vai testar · não entra nos totais</span></h2>';
+            }
             var problemas = g.servicos.filter(function (s) { return s.atual && (s.atual.estado === "offline" || s.atual.estado === "degradado"); }).length;
             var aberto = termo || abertos[g.id] !== false;
             var logo = LOGOS[g.id]
@@ -243,7 +253,7 @@
             lista.forEach(function (s) {
               var est = s.atual ? s.atual.estado : null;
               var c = est ? CLASSE[est] : "off";
-              var rotulo = est ? NOMES[est] : "Aguardando 1ª verificação";
+              var rotulo = !est ? "Aguardando 1ª verificação" : s.atual.naoConfigurado ? "Falta configurar" : NOMES[est];
               var somaAtivos = 0, somaOk = 0;
               Object.keys(s.dias).forEach(function (k) { var d = s.dias[k]; somaAtivos += d.t - d.des; somaOk += d.op + d.deg; });
               var up = somaAtivos ? ((somaOk / somaAtivos) * 100).toFixed(2).replace(".", ",") + "% no ar" : s.sobDemanda ? "liga sob demanda" : "";
@@ -253,7 +263,7 @@
               }).join("");
               html += '<div class="svc">';
               html += '<div class="svc-h"><span class="dot ' + c + '" aria-hidden="true">' + ICONE[c] + '</span><span class="nm">' + esc(s.nome) + "</span>" + (s.sobDemanda ? '<span class="tag">sob demanda</span>' : "");
-              html += '<span class="st ' + c + '">' + esc(rotulo) + (s.atual && s.atual.estado !== "desligado" && s.atual.ms ? " · " + s.atual.ms + " ms" : "") + "</span></div>";
+              html += '<span class="st ' + c + '">' + esc(rotulo) + (s.atual && s.atual.detalhe && !s.atual.naoConfigurado && (s.conta || s.atual.estado !== "operacional") ? " · " + s.atual.detalhe : s.atual && s.atual.estado !== "desligado" && s.atual.ms ? " · " + s.atual.ms + " ms" : "") + "</span></div>";
               html += '<div class="bars" role="img" aria-label="Últimos ' + nd + " dias de " + esc(s.nome) + '">' + barras + "</div>";
               html += '<div class="axis"><span>' + nd + " dias atrás</span><span>" + esc(up) + "</span><span>Hoje</span></div>";
               html += "</div>";
@@ -264,8 +274,10 @@
           document.getElementById("n-ok").textContent = n.ok;
           document.getElementById("n-warn").textContent = n.warn;
           document.getElementById("n-down").textContent = n.down;
-          document.getElementById("n-off").textContent = n.off;
-          document.getElementById("sub").textContent = "Situação dos " + total + " serviços da StoreApps, verificada a cada " + (dados.intervaloMinutos || 5) + " minutos.";
+          var hml = [], hmlOn = 0;
+          dados.grupos.filter(ehHml).forEach(function (g) { g.servicos.forEach(function (s) { hml.push(s); if (s.atual && s.atual.estado !== "desligado") hmlOn++; }); });
+          document.getElementById("n-off").textContent = hmlOn + "/" + hml.length;
+          document.getElementById("sub").textContent = "Situação dos " + total + " serviços em produção da StoreApps, verificada a cada " + (dados.intervaloMinutos || 5) + " minutos." + (faltam ? " " + faltam + " verificações de saldo e conta aguardam a chave." : "");
           document.getElementById("updated-txt").textContent = dados.atualizado ? "Última verificação " + tempoRelativo(dados.atualizado) : "Aguardando a primeira verificação (até 5 min).";
         }
 

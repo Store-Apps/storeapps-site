@@ -14,3 +14,24 @@ id = "e092b0c3e28242afa623090031eb1cd2"
 
 [observability]
 enabled = true
+
+# Buckets R2 da mesma conta: o Worker confere se respondem (lista 1 objeto).
+[[r2_buckets]]
+binding = "R2_VUMBORALA_MEDIA"
+bucket_name = "vumborala-media"
+
+[[r2_buckets]]
+binding = "R2_VUMBORALA_PRIVATE"
+bucket_name = "vumborala-private"
+
+[[r2_buckets]]
+binding = "R2_VUMBORALA_AJUDA"
+bucket_name = "vumborala-ajuda"
+
+[[r2_buckets]]
+binding = "R2_HUBGAMERS_MEDIA"
+bucket_name = "hubgamers-media"
+
+[[r2_buckets]]
+binding = "R2_HUBGAMERS_PRIVATE"
+bucket_name = "hubgamers-private"
