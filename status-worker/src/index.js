@@ -11,6 +11,8 @@ import { GRUPOS, SERVICOS } from './servicos.js';
 import { CHECAGENS } from './contas.js';
 
 const CHAVE = 'estado-v1';
+// Muda a cada mudança nas checagens: resultado de versão anterior não é reaproveitado.
+const VERSAO = 3;
 const DIAS = 90;
 const TIMEOUT_MS = 10_000;
 const LENTO_MS = 4_000;
@@ -169,11 +171,11 @@ async function rodada(env, lote = 0) {
   const resultados = await Promise.all(doLote.map(async (s) => {
     const antes = anterior.servicos?.[s.id];
     // "Falta configurar" nunca é reaproveitado: a chave pode ter acabado de chegar.
-    if (s.intervaloMin && antes?.verificadoEm && !antes.naoConfigurado && agora - antes.verificadoEm < s.intervaloMin * 60_000) {
+    if (s.intervaloMin && antes?.verificadoEm && antes.versao === VERSAO && !antes.naoConfigurado && agora - antes.verificadoEm < s.intervaloMin * 60_000) {
       const { desde, ...ultimo } = antes;
       return [s, ultimo];
     }
-    return [s, { ...(await verificar(s, env)), verificadoEm: agora }];
+    return [s, { ...(await verificar(s, env)), verificadoEm: agora, versao: VERSAO }];
   }));
   const porId = Object.fromEntries(resultados.map(([s, r]) => [s.id, r]));
   for (const par of resultados) {
