@@ -58,7 +58,7 @@ O favicon usa o próprio símbolo fornecido, aproximado por um enquadramento SVG
 O verificador é o Cloudflare Worker `storeapps-status` (pasta `status-worker/`): a cada 5 minutos bate em cada serviço de `status-worker/src/servicos.js`, guarda o estado atual e o resumo de cada dia (90 dias) no KV e responde `GET /status` (sem URLs: a página pública só recebe nome e estado). Homologação marcada `sobDemanda` fora do ar aparece como **desligada**, não como offline.
 
 - Incluir ou tirar um serviço: editar `status-worker/src/servicos.js` e publicar com `cd status-worker && npx wrangler@4 deploy` (conta StoreApps na Cloudflare).
-- Endereço atual do verificador: `https://storeapps-status.hubgamers-admin.workers.dev/status` (constante `STATUS_URL` na página).
+- Endereço do verificador: `https://status.storeapps.com.br/status` (custom domain do Worker; constante `STATUS_URL` na página).
 
 ### Saldos, cotas e contas
 

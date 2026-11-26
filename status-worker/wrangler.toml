@@ -4,6 +4,8 @@ name = "storeapps-status"
 main = "src/index.js"
 compatibility_date = "2026-11-01"
 workers_dev = true
+# Endereço público (custom domain): a Cloudflare cria o DNS e o certificado.
+routes = [{ pattern = "status.storeapps.com.br", custom_domain = true }]
 
 [triggers]
 crons = ["*/5 * * * *"]
