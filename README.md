@@ -59,3 +59,9 @@ O verificador é o Cloudflare Worker `storeapps-status` (pasta `status-worker/`)
 
 - Incluir ou tirar um serviço: editar `status-worker/src/servicos.js` e publicar com `cd status-worker && npx wrangler@4 deploy` (conta StoreApps na Cloudflare).
 - Endereço atual do verificador: `https://storeapps-status.hubgamers-admin.workers.dev/status` (constante `STATUS_URL` na página).
+
+### Saldos, cotas e contas
+
+O verificador também confere provedores (páginas de status da Cloudflare, GitHub, Claude, OpenAI, Firebase, Google Maps, AWS e Hostinger), o vencimento dos domínios no Registro.br e, com chave, as contas que fazem os produtos funcionarem: saldo do Claude e da OpenAI, saldo do SMS Fire, teto do X, saldo do proxy IPRoyal, FACEIT, Steam, push do Firebase, máquinas EC2, bancos no Neon, GitHub Actions (bloqueio por cobrança) e os buckets R2. Sem a chave, o item aparece como "Falta configurar" e não entra nos totais.
+
+As chaves ficam como segredos do Worker. Para cadastrar ou trocar: `cd status-worker && .\configurar-segredos.ps1` (copia o que já está no AWS Secrets Manager, cria uma chave AWS só de leitura das máquinas e pergunta o resto, sem mostrar nada na tela).

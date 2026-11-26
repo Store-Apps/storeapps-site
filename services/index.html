@@ -220,7 +220,7 @@
         function render() {
           if (!dados) return;
           var termo = elBusca.value.trim().toLowerCase();
-          var n = { ok: 0, warn: 0, down: 0, off: 0 }, total = 0;
+          var n = { ok: 0, warn: 0, down: 0, off: 0 }, total = 0, faltam = 0;
           var nd = quantosDias();
           var hoje = new Date();
           var chaves = [];
@@ -232,6 +232,7 @@
               return !termo || s.nome.toLowerCase().indexOf(termo) >= 0 || g.nome.toLowerCase().indexOf(termo) >= 0;
             });
             if (!ehHml(g)) g.servicos.forEach(function (s) {
+              if (s.atual && s.atual.naoConfigurado) { faltam++; return; }
               total++;
               var c = s.atual ? CLASSE[s.atual.estado] : "off";
               n[c]++;
@@ -252,7 +253,7 @@
             lista.forEach(function (s) {
               var est = s.atual ? s.atual.estado : null;
               var c = est ? CLASSE[est] : "off";
-              var rotulo = est ? NOMES[est] : "Aguardando 1ª verificação";
+              var rotulo = !est ? "Aguardando 1ª verificação" : s.atual.naoConfigurado ? "Falta configurar" : NOMES[est];
               var somaAtivos = 0, somaOk = 0;
               Object.keys(s.dias).forEach(function (k) { var d = s.dias[k]; somaAtivos += d.t - d.des; somaOk += d.op + d.deg; });
               var up = somaAtivos ? ((somaOk / somaAtivos) * 100).toFixed(2).replace(".", ",") + "% no ar" : s.sobDemanda ? "liga sob demanda" : "";
@@ -262,7 +263,7 @@
               }).join("");
               html += '<div class="svc">';
               html += '<div class="svc-h"><span class="dot ' + c + '" aria-hidden="true">' + ICONE[c] + '</span><span class="nm">' + esc(s.nome) + "</span>" + (s.sobDemanda ? '<span class="tag">sob demanda</span>' : "");
-              html += '<span class="st ' + c + '">' + esc(rotulo) + (s.atual && s.atual.estado !== "desligado" && s.atual.ms ? " · " + s.atual.ms + " ms" : "") + "</span></div>";
+              html += '<span class="st ' + c + '">' + esc(rotulo) + (s.atual && s.atual.detalhe && !s.atual.naoConfigurado && (s.conta || s.atual.estado !== "operacional") ? " · " + s.atual.detalhe : s.atual && s.atual.estado !== "desligado" && s.atual.ms ? " · " + s.atual.ms + " ms" : "") + "</span></div>";
               html += '<div class="bars" role="img" aria-label="Últimos ' + nd + " dias de " + esc(s.nome) + '">' + barras + "</div>";
               html += '<div class="axis"><span>' + nd + " dias atrás</span><span>" + esc(up) + "</span><span>Hoje</span></div>";
               html += "</div>";
@@ -276,7 +277,7 @@
           var hml = [], hmlOn = 0;
           dados.grupos.filter(ehHml).forEach(function (g) { g.servicos.forEach(function (s) { hml.push(s); if (s.atual && s.atual.estado !== "desligado") hmlOn++; }); });
           document.getElementById("n-off").textContent = hmlOn + "/" + hml.length;
-          document.getElementById("sub").textContent = "Situação dos " + total + " serviços em produção da StoreApps, verificada a cada " + (dados.intervaloMinutos || 5) + " minutos.";
+          document.getElementById("sub").textContent = "Situação dos " + total + " serviços em produção da StoreApps, verificada a cada " + (dados.intervaloMinutos || 5) + " minutos." + (faltam ? " " + faltam + " verificações de saldo e conta aguardam a chave." : "");
           document.getElementById("updated-txt").textContent = dados.atualizado ? "Última verificação " + tempoRelativo(dados.atualizado) : "Aguardando a primeira verificação (até 5 min).";
         }
 
