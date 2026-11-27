@@ -93,7 +93,7 @@ export const SERVICOS = [
 
   // ---- Contas, saldos e cotas (tipo conta: precisa dos segredos do Worker) ----
   // StoreApps / infraestrutura comum
-  { id: 'infra-github', grupo: 'storeapps', nome: 'GitHub Actions (deploys e CI)', tipo: 'conta', checagem: 'github', segredos: ['GITHUB_STATUS_TOKEN'], intervaloMin: 15, repos: ['Store-Apps/vumborala', 'Store-Apps/delivery', 'Store-Apps/storeapps-site', 'BrunoCarvalhoSI/oxe-sushi'] },
+  { id: 'infra-github', grupo: 'storeapps', nome: 'GitHub Actions (deploys e CI)', tipo: 'conta', checagem: 'github', segredos: ['GITHUB_STATUS_TOKEN'], intervaloMin: 15, repos: ['Store-Apps/vumborala', 'Store-Apps/delivery', 'Store-Apps/storeapps-site'] },
 
   // VumboraLá
   { id: 'vumborala-ec2', grupo: 'vumborala', nome: 'Servidor (EC2 São Paulo)', tipo: 'conta', checagem: 'ec2', segredos: ['AWS_STATUS_KEY_ID', 'AWS_STATUS_SECRET'], regiao: 'sa-east-1', instancia: 'i-0283329b1f23b2cd5' },
@@ -121,6 +121,7 @@ export const SERVICOS = [
   // Oxe Sushi
   { id: 'oxe-ia-claude', grupo: 'oxe', nome: 'IA das notas e maquininha (saldo Claude)', tipo: 'conta', checagem: 'anthropic', segredos: ['ANTHROPIC_KEY_OXE'], intervaloMin: 30 },
   { id: 'oxe-ia-gpt', grupo: 'oxe', nome: 'IA das notas e maquininha (saldo GPT)', tipo: 'conta', checagem: 'openai', segredos: ['OPENAI_KEY_OXE'], intervaloMin: 30, modelo: 'gpt-4.1-mini' },
+  { id: 'oxe-github', grupo: 'oxe', nome: 'GitHub Actions (deploys do Oxe)', tipo: 'conta', checagem: 'github', segredos: ['GITHUB_STATUS_TOKEN_OXE'], intervaloMin: 15, repos: ['BrunoCarvalhoSI/oxe-sushi'] },
   { id: 'oxe-telegram', grupo: 'oxe', nome: 'Avisos no Telegram', tipo: 'conta', checagem: 'telegram', segredos: ['TELEGRAM_TOKEN_OXE'], intervaloMin: 15 },
 
   // Querido Delivery

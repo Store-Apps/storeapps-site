@@ -27,7 +27,13 @@ function Perguntar([string]$nome, [string]$explicacao) {
   Write-Host ""
   Write-Host "$nome  ($explicacao)  [Enter vazio pula]"
   $s = Read-Host -AsSecureString
-  return [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($s))
+  $v = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR($s))
+  # Caminho de arquivo (ex.: o .json do Firebase): usa o conteúdo, numa linha só.
+  $caminho = $v.Trim().Trim('"')
+  if ($caminho -and (Test-Path -LiteralPath $caminho -PathType Leaf)) {
+    return ((Get-Content -LiteralPath $caminho -Raw | ConvertFrom-Json) | ConvertTo-Json -Depth 20 -Compress)
+  }
+  return $v
 }
 
 Write-Host "1) Chaves que já estão no AWS Secrets Manager" -ForegroundColor Cyan
@@ -67,12 +73,14 @@ $nova = $null
 Write-Host ""
 Write-Host "3) GitHub Actions (token da conta bruno-storeapps)" -ForegroundColor Cyan
 Gravar 'GITHUB_STATUS_TOKEN' (gh auth token --user bruno-storeapps)
+# O repositório do Oxe (BrunoCarvalhoSI/oxe-sushi) fica na outra conta do gh.
+Gravar 'GITHUB_STATUS_TOKEN_OXE' (gh auth token --user BrunoCarvalhoSI)
 
 Write-Host ""
 Write-Host "4) Chaves que só você tem (cole quando pedir)" -ForegroundColor Cyan
 Gravar 'SMSFIRE_USERNAME_VUMBORALA' (Perguntar 'SMSFIRE_USERNAME_VUMBORALA' 'SMSFIRE_USERNAME do VumboraLá, no .env do servidor')
 Gravar 'SMSFIRE_TOKEN_VUMBORALA' (Perguntar 'SMSFIRE_TOKEN_VUMBORALA' 'SMSFIRE_API_TOKEN do VumboraLá')
-Gravar 'FIREBASE_SA_VUMBORALA' (Perguntar 'FIREBASE_SA_VUMBORALA' 'JSON inteiro da conta de serviço do Firebase do VumboraLá, numa linha')
+Gravar 'FIREBASE_SA_VUMBORALA' (Perguntar 'FIREBASE_SA_VUMBORALA' 'caminho do arquivo .json da conta de serviço do Firebase do VumboraLá')
 Gravar 'ANTHROPIC_KEY_OXE'   (Perguntar 'ANTHROPIC_KEY_OXE' 'ANTHROPIC_API_KEY do oxe-financeiro, no .env da Hostinger')
 Gravar 'OPENAI_KEY_OXE'      (Perguntar 'OPENAI_KEY_OXE' 'OPENAI_API_KEY do oxe-financeiro')
 Gravar 'TELEGRAM_TOKEN_OXE'  (Perguntar 'TELEGRAM_TOKEN_OXE' 'TELEGRAM_BOT_TOKEN do oxe-financeiro')

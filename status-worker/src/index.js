@@ -11,6 +11,8 @@ import { GRUPOS, SERVICOS } from './servicos.js';
 import { CHECAGENS } from './contas.js';
 
 const CHAVE = 'estado-v1';
+// Muda a cada mudança nas checagens: resultado de versão anterior não é reaproveitado.
+const VERSAO = 3;
 const DIAS = 90;
 const TIMEOUT_MS = 10_000;
 const LENTO_MS = 4_000;
@@ -89,7 +91,7 @@ async function verificar(s, env) {
       const r = await CHECAGENS[s.checagem](env, s);
       return { codigo: 0, ...r, ms: Date.now() - inicio };
     } catch (e) {
-      return { estado: 'offline', codigo: 0, ms: Date.now() - inicio, detalhe: e?.name === 'TimeoutError' ? 'sem resposta em 10 s' : 'falhou ao checar' };
+      return { estado: 'offline', codigo: 0, ms: Date.now() - inicio, detalhe: e?.name === 'TimeoutError' ? 'sem resposta em 10 s' : `falhou ao checar: ${String(e?.message || e).slice(0, 80)}` };
     }
   }
   if (s.tipo) {
@@ -156,18 +158,24 @@ async function verificar(s, env) {
   }
 }
 
-async function rodada(env) {
+// O plano grátis da Cloudflare deixa ~50 chamadas de rede por execução. Os
+// serviços se dividem em lotes, cada um num cron (minutos 0, 1 e 2 de cada 5).
+const CRONS = ['*/5 * * * *', '1-56/5 * * * *', '2-57/5 * * * *'];
+
+async function rodada(env, lote = 0) {
   const agora = Date.now();
   const dia = diaDe(agora);
   const anterior = (await env.STATUS.get(CHAVE, 'json')) || { servicos: {}, dias: {} };
   // Checagem com intervalo próprio (as que gastam, como IA): reaproveita o último resultado.
-  const resultados = await Promise.all(SERVICOS.map(async (s) => {
+  const doLote = SERVICOS.filter((_, i) => i % CRONS.length === lote);
+  const resultados = await Promise.all(doLote.map(async (s) => {
     const antes = anterior.servicos?.[s.id];
-    if (s.intervaloMin && antes?.verificadoEm && agora - antes.verificadoEm < s.intervaloMin * 60_000) {
+    // "Falta configurar" nunca é reaproveitado: a chave pode ter acabado de chegar.
+    if (s.intervaloMin && antes?.verificadoEm && antes.versao === VERSAO && !antes.naoConfigurado && agora - antes.verificadoEm < s.intervaloMin * 60_000) {
       const { desde, ...ultimo } = antes;
       return [s, ultimo];
     }
-    return [s, { ...(await verificar(s, env)), verificadoEm: agora }];
+    return [s, { ...(await verificar(s, env)), verificadoEm: agora, versao: VERSAO }];
   }));
   const porId = Object.fromEntries(resultados.map(([s, r]) => [s.id, r]));
   for (const par of resultados) {
@@ -177,7 +185,7 @@ async function rodada(env) {
     }
   }
 
-  const servicos = {};
+  const servicos = { ...(anterior.servicos || {}) };
   const dias = anterior.dias || {};
   for (const [s, r] of resultados) {
     const antes = anterior.servicos?.[s.id];
@@ -192,6 +200,7 @@ async function rodada(env) {
   }
   // serviço removido de servicos.js: some do histórico também
   for (const id of Object.keys(dias)) if (!SERVICOS.some((s) => s.id === id)) delete dias[id];
+  for (const id of Object.keys(servicos)) if (!SERVICOS.some((s) => s.id === id)) delete servicos[id];
 
   await env.STATUS.put(CHAVE, JSON.stringify({ atualizado: agora, servicos, dias }));
 }
@@ -206,8 +215,8 @@ function cors(req) {
 }
 
 export default {
-  async scheduled(_evento, env, ctx) {
-    ctx.waitUntil(rodada(env));
+  async scheduled(evento, env, ctx) {
+    ctx.waitUntil(rodada(env, Math.max(0, CRONS.indexOf(evento.cron))));
   },
 
   async fetch(req, env) {
