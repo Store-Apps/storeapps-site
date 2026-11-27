@@ -234,7 +234,9 @@
           var ordem = dados.grupos.filter(function (g) { return !ehHml(g); }).concat(dados.grupos.filter(ehHml));
           ordem.forEach(function (g) {
             var ruim = function (s) { return s.atual && (s.atual.estado === "offline" || s.atual.estado === "degradado"); };
-            var filtrando = soProblema[g.id] && g.servicos.some(ruim);
+            // Sem problema no grupo, o filtro se desfaz (não volta sozinho quando algo cair de novo).
+            if (soProblema[g.id] && !g.servicos.some(ruim)) delete soProblema[g.id];
+            var filtrando = soProblema[g.id] && !termo; // com busca, vale a busca
             var lista = g.servicos.filter(function (s) {
               if (filtrando && !ruim(s)) return false;
               return !termo || s.nome.toLowerCase().indexOf(termo) >= 0 || g.nome.toLowerCase().indexOf(termo) >= 0;
@@ -340,12 +342,16 @@
           var sel = alvo.closest("[data-filtro]"), todos = alvo.closest("[data-todos]");
           if (!sel && !todos) return;
           e.preventDefault(); // o selo fica dentro do <summary>: não deixa abrir/fechar o grupo
-          if (sel) { var id = sel.dataset.filtro; soProblema[id] = !soProblema[id]; abertos[id] = true; }
-          else delete soProblema[todos.dataset.todos];
+          var id = sel ? sel.dataset.filtro : todos.dataset.todos;
+          if (sel) { soProblema[id] = !soProblema[id]; abertos[id] = true; }
+          else delete soProblema[id];
           render();
+          // O render troca o HTML todo: devolve o foco ao selo do grupo para o teclado não voltar ao topo.
+          var volta = elGroups.querySelector('[data-filtro="' + id + '"]');
+          if (volta) volta.focus({ preventScroll: true });
         }
         elGroups.addEventListener("click", function (e) { filtrarGrupo(e.target, e); });
-        elGroups.addEventListener("keydown", function (e) { if ((e.key === "Enter" || e.key === " ") && e.target.matches("[data-filtro]")) filtrarGrupo(e.target, e); });
+        elGroups.addEventListener("keydown", function (e) { if ((e.key === "Enter" || e.key === " ") && e.target.matches("[data-filtro]")) { if (e.repeat) { e.preventDefault(); return; } filtrarGrupo(e.target, e); } });
         elBusca.addEventListener("input", render);
         var larguraAntes = 0;
         window.addEventListener("resize", function () { var w = quantosDias(); if (w !== larguraAntes) { larguraAntes = w; render(); } });
