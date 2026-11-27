@@ -242,14 +242,16 @@
               hmlAberto = true;
               html += '<h2 class="sec">Homologação <span>liga só quando a equipe vai testar · não entra nos totais</span></h2>';
             }
-            var problemas = g.servicos.filter(function (s) { return s.atual && (s.atual.estado === "offline" || s.atual.estado === "degradado"); }).length;
+            var conta = function (e) { return g.servicos.filter(function (s) { return s.atual && s.atual.estado === e; }).length; };
+            var foraG = conta("offline"), avisoG = conta("degradado");
+            var selos = (foraG ? '<span class="st down">' + foraG + " offline</span>" : "") + (avisoG ? '<span class="st warn">' + avisoG + (avisoG > 1 ? " degradados" : " degradado") + "</span>" : "");
             var aberto = termo || abertos[g.id] !== false;
             var logo = LOGOS[g.id]
               ? '<img class="g-logo" src="' + LOGOS[g.id] + '" alt="" width="26" height="26" />'
               : '<span class="g-ini" style="background:' + (INICIAIS[g.id] || ["?", "#3b74ff"])[1] + '" aria-hidden="true">' + (INICIAIS[g.id] || ["?"])[0] + "</span>";
             html += '<details class="group" data-g="' + esc(g.id) + '"' + (aberto ? " open" : "") + ">";
             html += '<summary><svg class="chev" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="m4 2 4 4-4 4"/></svg>' + logo + '<span class="g-name">' + esc(g.nome) + "</span>";
-            html += '<span class="g-meta">' + (problemas ? '<span class="st down">' + problemas + " com problema</span>" : "") + "<span>" + g.servicos.length + " serviços</span></span></summary>";
+            html += '<span class="g-meta">' + selos + "<span>" + g.servicos.length + " serviços</span></span></summary>";
             lista.forEach(function (s) {
               var est = s.atual ? s.atual.estado : null;
               var c = est ? CLASSE[est] : "off";
