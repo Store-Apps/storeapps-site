@@ -98,7 +98,11 @@ async function verificarEspecial(s, inicio) {
   }
   if (s.tipo === 'rdap') {
     const status = d.status || [];
-    if (status.some((x) => /pending/i.test(x))) return { estado: s.sobDemanda ? 'desligado' : 'degradado', codigo: r.status, ms, detalhe: 'registro em andamento' };
+    if (status.some((x) => /pending/i.test(x))) return { estado: s.novo ? 'desligado' : 'degradado', codigo: r.status, ms, detalhe: 'registro em andamento no registro.br' };
+    if (s.ns) {
+      const atuais = (d.nameservers || []).map((n) => (n.ldhName || '').toLowerCase().replace(/\.$/, ''));
+      if (!s.ns.every((n) => atuais.includes(n))) return { estado: 'degradado', codigo: r.status, ms, detalhe: atuais.length ? `nameservers ainda não são os da Cloudflare (${atuais.join(', ')})` : 'registrado, sem nameservers ainda' };
+    }
     const exp = (d.events || []).find((e) => e.eventAction === 'expiration');
     if (!exp) return { estado: 'degradado', codigo: r.status, ms, detalhe: 'sem data de vencimento' };
     const dias = Math.floor((Date.parse(exp.eventDate) - Date.now()) / 86_400_000);
