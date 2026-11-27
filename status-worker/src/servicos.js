@@ -130,10 +130,10 @@ export const SERVICOS = [
 
   // ---- Apple ----
   // App Store (consulta pública): o app aparece na loja do Brasil.
-  { id: 'vumborala-appstore-passageiro', grupo: 'vumborala', nome: 'App Store · Passageiro', tipo: 'itunes', appId: '6831323631' },
-  { id: 'vumborala-appstore-motorista', grupo: 'vumborala', nome: 'App Store · Motorista', tipo: 'itunes', appId: '6831854412' },
+  { id: 'vumborala-appstore-passageiro', grupo: 'vumborala', nome: 'App Store · Passageiro', tipo: 'itunes', intervaloMin: 30, appId: '6831323631' },
+  { id: 'vumborala-appstore-motorista', grupo: 'vumborala', nome: 'App Store · Motorista', tipo: 'itunes', intervaloMin: 30, appId: '6831854412' },
   // Hub Gamers ainda não foi aprovado na Apple: ausente da loja é esperado (cinza, não vermelho).
-  { id: 'hubgamers-appstore', grupo: 'hubgamers', nome: 'App Store · Hub Gamers', tipo: 'itunes', appId: '6836090983', naoPublicadoOk: true },
+  { id: 'hubgamers-appstore', grupo: 'hubgamers', nome: 'App Store · Hub Gamers', tipo: 'itunes', intervaloMin: 30, appId: '6836090983', naoPublicadoOk: true },
   // App Store Connect (com a chave do ASC): situação da última versão enviada.
   { id: 'vumborala-asc-passageiro', grupo: 'vumborala', nome: 'Apple · versão do Passageiro (revisão)', tipo: 'conta', checagem: 'ascVersao', segredos: ['ASC_KEY_ID', 'ASC_ISSUER_ID', 'ASC_KEY_P8'], appId: '6831323631', intervaloMin: 60 },
   { id: 'vumborala-asc-motorista', grupo: 'vumborala', nome: 'Apple · versão do Motorista (revisão)', tipo: 'conta', checagem: 'ascVersao', segredos: ['ASC_KEY_ID', 'ASC_ISSUER_ID', 'ASC_KEY_P8'], appId: '6831854412', intervaloMin: 60 },

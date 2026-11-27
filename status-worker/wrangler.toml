@@ -10,6 +10,11 @@ routes = [{ pattern = "status.storeapps.com.br", custom_domain = true }]
 [triggers]
 crons = ["*/5 * * * *", "1-56/5 * * * *", "2-57/5 * * * *"]
 
+# Identificadores da chave do App Store Connect (não são segredo; a chave .p8 é secret).
+[vars]
+ASC_KEY_ID = "DSUJS39D7G"
+ASC_ISSUER_ID = "b8c23663-b6bc-425c-81e2-5bf3201327b2"
+
 [[kv_namespaces]]
 binding = "STATUS"
 id = "e092b0c3e28242afa623090031eb1cd2"

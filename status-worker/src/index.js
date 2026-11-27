@@ -12,7 +12,7 @@ import { CHECAGENS } from './contas.js';
 
 const CHAVE = 'estado-v1';
 // Muda a cada mudança nas checagens: resultado de versão anterior não é reaproveitado.
-const VERSAO = 8;
+const VERSAO = 9;
 const DIAS = 90;
 const TIMEOUT_MS = 10_000;
 const LENTO_MS = 4_000;
@@ -41,12 +41,20 @@ async function texto(r) {
 /** Páginas de status de terceiros e o Registro.br: vale o que elas dizem, não só responder. */
 async function verificarEspecial(s, inicio) {
   const url = s.tipo === 'rdap' ? `https://rdap.registro.br/domain/${s.dominio}`
-    : s.tipo === 'itunes' ? `https://itunes.apple.com/lookup?id=${s.appId}&country=br`
+    : s.tipo === 'itunes' ? `https://apps.apple.com/br/app/id${s.appId}`
     : s.url;
   const r = await fetch(url, { signal: AbortSignal.timeout(TIMEOUT_MS), headers: { accept: 'application/json', 'user-agent': 'StoreApps-Status/1.0' } });
   const ms = Date.now() - inicio;
   // Registro.br e cia. limitam consultas: recusa não é o serviço fora, é "tente depois".
   if (r.status === 403 || r.status === 429) return { estado: 'degradado', codigo: r.status, ms, detalhe: 'consulta limitada, tentando depois', manterAnterior: true };
+  // App Store: a consulta itunes.apple.com recusa os IPs da Cloudflare; a página da loja
+  // responde 404 quando o app não está publicado e traz a versão no HTML.
+  if (s.tipo === 'itunes') {
+    if (r.status === 404) return s.naoPublicadoOk ? { estado: 'desligado', codigo: r.status, ms, detalhe: 'ainda não publicado na App Store' } : { estado: 'offline', codigo: r.status, ms, detalhe: 'fora da App Store' };
+    if (!r.ok) return { estado: 'degradado', codigo: r.status, ms, detalhe: `loja respondeu ${r.status}`, manterAnterior: true };
+    const v = (await texto(r)).match(/"primarySubtitle":"Vers(?:ão|ao|ion) ([\d.]+)"/);
+    return { estado: 'operacional', codigo: r.status, ms, detalhe: v ? `versão ${v[1]} na loja` : 'na loja' };
+  }
   if (!r.ok) return { estado: 'offline', codigo: r.status, ms, detalhe: `página de status respondeu ${r.status}` };
   const bruto = await texto(r);
   // A Apple manda o status de desenvolvedor como JSONP: jsonCallback({...}).
@@ -74,11 +82,6 @@ async function verificarEspecial(s, inicio) {
     const daRegiao = (d || []).filter((e) => (e.arn || '').includes(`:${s.regiao}:`) || (e.service || '').endsWith(s.regiao));
     if (!daRegiao.length) return { estado: 'operacional', codigo: r.status, ms, detalhe: '' };
     return { estado: 'degradado', codigo: r.status, ms, detalhe: (daRegiao[0].summary || 'evento aberto na região').slice(0, 120) };
-  }
-  if (s.tipo === 'itunes') {
-    const app = d.resultCount ? d.results[0] : null;
-    if (!app) return s.naoPublicadoOk ? { estado: 'desligado', codigo: r.status, ms, detalhe: 'ainda não publicado na App Store' } : { estado: 'offline', codigo: r.status, ms, detalhe: 'fora da App Store' };
-    return { estado: 'operacional', codigo: r.status, ms, detalhe: `versão ${app.version} na loja` };
   }
   if (s.tipo === 'apple-status') {
     let estado = 'operacional';

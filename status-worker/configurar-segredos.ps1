@@ -80,9 +80,7 @@ Write-Host ""
 Write-Host "3b) Apple: chave do App Store Connect (a mesma que envia as versões)" -ForegroundColor Cyan
 $p8 = Join-Path $env:USERPROFILE '.keys\AuthKey_DSUJS39D7G.p8'
 if (Test-Path $p8) {
-  Gravar 'ASC_KEY_ID' 'DSUJS39D7G'
   Gravar 'ASC_KEY_P8' (Get-Content -LiteralPath $p8 -Raw)
-  Gravar 'ASC_ISSUER_ID' (Perguntar 'ASC_ISSUER_ID' 'Issuer ID do App Store Connect: Usuários e acesso > Integrações > App Store Connect API')
 } else {
   Write-Host "  - chave .p8 não encontrada em $p8, pulado" -ForegroundColor Yellow
 }
