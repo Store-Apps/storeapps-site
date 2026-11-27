@@ -127,4 +127,18 @@ export const SERVICOS = [
   // Querido Delivery
   { id: 'querido-ec2', grupo: 'querido', nome: 'Servidor da homologação (EC2)', tipo: 'conta', checagem: 'ec2', segredos: ['AWS_STATUS_KEY_ID', 'AWS_STATUS_SECRET'], regiao: 'sa-east-1', instancia: 'i-03fa95110df0fe345', sobDemanda: true },
   { id: 'querido-neon', grupo: 'querido', nome: 'Banco de dados (Neon)', tipo: 'conta', checagem: 'neon', segredos: ['NEON_KEY_QUERIDO'], projeto: 'curly-morning-96033755', intervaloMin: 15, sobDemanda: true },
+
+  // ---- Apple ----
+  // App Store (consulta pública): o app aparece na loja do Brasil.
+  { id: 'vumborala-appstore-passageiro', grupo: 'vumborala', nome: 'App Store · Passageiro', tipo: 'itunes', appId: '6831323631' },
+  { id: 'vumborala-appstore-motorista', grupo: 'vumborala', nome: 'App Store · Motorista', tipo: 'itunes', appId: '6831854412' },
+  // Hub Gamers ainda não foi aprovado na Apple: ausente da loja é esperado (cinza, não vermelho).
+  { id: 'hubgamers-appstore', grupo: 'hubgamers', nome: 'App Store · Hub Gamers', tipo: 'itunes', appId: '6836090983', naoPublicadoOk: true },
+  // App Store Connect (com a chave do ASC): situação da última versão enviada.
+  { id: 'vumborala-asc-passageiro', grupo: 'vumborala', nome: 'Apple · versão do Passageiro (revisão)', tipo: 'conta', checagem: 'ascVersao', segredos: ['ASC_KEY_ID', 'ASC_ISSUER_ID', 'ASC_KEY_P8'], appId: '6831323631', intervaloMin: 60 },
+  { id: 'vumborala-asc-motorista', grupo: 'vumborala', nome: 'Apple · versão do Motorista (revisão)', tipo: 'conta', checagem: 'ascVersao', segredos: ['ASC_KEY_ID', 'ASC_ISSUER_ID', 'ASC_KEY_P8'], appId: '6831854412', intervaloMin: 60 },
+  { id: 'hubgamers-asc', grupo: 'hubgamers', nome: 'Apple · versão do Hub Gamers (revisão)', tipo: 'conta', checagem: 'ascVersao', segredos: ['ASC_KEY_ID', 'ASC_ISSUER_ID', 'ASC_KEY_P8'], appId: '6836090983', intervaloMin: 60 },
+  { id: 'storeapps-apple-certificados', grupo: 'storeapps', nome: 'Apple · certificados e perfis de distribuição', tipo: 'conta', checagem: 'ascCertificados', segredos: ['ASC_KEY_ID', 'ASC_ISSUER_ID', 'ASC_KEY_P8'], intervaloMin: 720 },
+  // Página de status de desenvolvedor da Apple, só os serviços que usamos.
+  { id: 'prov-apple', grupo: 'provedores', nome: 'Apple (App Store Connect, TestFlight, push, contas)', tipo: 'apple-status', url: 'https://www.apple.com/support/systemstatus/data/developer/system_status_en_US.js', servicos: ['Account', 'APNS', 'App Store Connect', 'App Store Connect - App Processing ', 'App Store Connect - App Upload', 'App Store Connect - TestFlight', 'App Store Connect API', 'Certificates, Identifiers & Profiles', 'Program Enrollment and Renewals'] },
 ];

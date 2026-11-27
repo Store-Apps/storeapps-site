@@ -32,6 +32,29 @@ function numeroDeSaldo(j, chaves = /saldo|balance|credit|credito|available|remai
   return achado;
 }
 
+
+/** JWT ES256 do App Store Connect (chave .p8 do ASC). */
+async function tokenAsc(env, s) {
+  const [kid, iss, p8] = s.segredos.map((n) => env[n]);
+  const b64 = (u8) => btoa(String.fromCharCode(...u8)).replace(/=+$/, '').replace(/\+/g, '-').replace(/\//g, '_');
+  const txt = (o) => b64(new TextEncoder().encode(JSON.stringify(o)));
+  const agora = Math.floor(Date.now() / 1000);
+  const cab = txt({ alg: 'ES256', kid, typ: 'JWT' });
+  const corpoJwt = txt({ iss, iat: agora, exp: agora + 1200, aud: 'appstoreconnect-v1' });
+  const der = Uint8Array.from(atob(p8.replace(/-----[^-]+-----/g, '').replace(/\s+/g, '')), (c) => c.charCodeAt(0));
+  const chave = await crypto.subtle.importKey('pkcs8', der, { name: 'ECDSA', namedCurve: 'P-256' }, false, ['sign']);
+  const ass = new Uint8Array(await crypto.subtle.sign({ name: 'ECDSA', hash: 'SHA-256' }, chave, new TextEncoder().encode(`${cab}.${corpoJwt}`)));
+  return `${cab}.${corpoJwt}.${b64(ass)}`;
+}
+
+async function asc(env, s, caminho) {
+  const r = await fetch(`https://api.appstoreconnect.apple.com${caminho}`, {
+    signal: AbortSignal.timeout(T),
+    headers: { authorization: `Bearer ${await tokenAsc(env, s)}` },
+  });
+  return { r, j: r.ok ? await r.json() : null };
+}
+
 export const CHECAGENS = {
   /** Claude: 1 token no modelo mais barato. "credit balance" = sem saldo. */
   async anthropic(env, s) {
@@ -207,6 +230,47 @@ export const CHECAGENS = {
     if (r.ok || r.status === 400 || r.status === 404) return ok('push autenticado');
     if (r.status === 401 || r.status === 403) return fora('push sem permissão');
     return aviso(`respondeu ${r.status}`);
+  },
+
+  /** Última versão enviada à Apple: rejeitada = aviso (a anterior segue na loja). */
+  async ascVersao(env, s) {
+    const { r, j } = await asc(env, s, `/v1/apps/${s.appId}/appStoreVersions?filter[platform]=IOS&limit=5&fields[appStoreVersions]=versionString,appStoreState,createdDate`);
+    if (r.status === 401) return fora('chave do App Store Connect recusada');
+    if (r.status === 403 || r.status === 404) return aviso('a chave não tem acesso a este app');
+    if (!r.ok) return aviso(`respondeu ${r.status}`);
+    const v = (j.data || []).map((x) => x.attributes).sort((a, b) => Date.parse(b.createdDate) - Date.parse(a.createdDate))[0];
+    if (!v) return aviso('nenhuma versão enviada');
+    const estados = {
+      READY_FOR_SALE: ['operacional', 'à venda'], READY_FOR_DISTRIBUTION: ['operacional', 'à venda'],
+      WAITING_FOR_REVIEW: ['operacional', 'aguardando revisão'], IN_REVIEW: ['operacional', 'em revisão'],
+      PENDING_DEVELOPER_RELEASE: ['operacional', 'aprovada, esperando liberar'], PENDING_APPLE_RELEASE: ['operacional', 'aprovada'],
+      PROCESSING_FOR_APP_STORE: ['operacional', 'processando'], PREPARE_FOR_SUBMISSION: ['operacional', 'em preparação'],
+      REJECTED: ['degradado', 'REJEITADA pela Apple'], METADATA_REJECTED: ['degradado', 'metadados rejeitados'],
+      DEVELOPER_REJECTED: ['degradado', 'retirada da revisão'], INVALID_BINARY: ['degradado', 'binário inválido'],
+      REMOVED_FROM_SALE: ['offline', 'removida da venda'], DEVELOPER_REMOVED_FROM_SALE: ['offline', 'retirada da venda'],
+    };
+    const [estado, txt] = estados[v.appStoreState] || ['operacional', v.appStoreState];
+    return { estado, detalhe: `${v.versionString}: ${txt}` };
+  },
+
+  /** Certificados e perfis de distribuição: vencimento (30 dias = aviso; vencido = fora). */
+  async ascCertificados(env, s) {
+    const c = await asc(env, s, '/v1/certificates?limit=200&fields[certificates]=name,certificateType,expirationDate');
+    if (c.r.status === 401) return fora('chave do App Store Connect recusada');
+    if (!c.r.ok) return aviso(`respondeu ${c.r.status}`);
+    const p = await asc(env, s, '/v1/profiles?limit=200&filter[profileState]=ACTIVE&fields[profiles]=name,expirationDate');
+    const itens = [
+      ...(c.j.data || []).filter((x) => /DISTRIBUTION/.test(x.attributes.certificateType || '')).map((x) => ({ nome: x.attributes.name, vence: x.attributes.expirationDate })),
+      ...((p.j && p.j.data) || []).map((x) => ({ nome: x.attributes.name, vence: x.attributes.expirationDate })),
+    ].filter((x) => x.vence);
+    if (!itens.length) return ok('nenhum certificado de distribuição (assinatura automática)');
+    itens.sort((a, b) => Date.parse(a.vence) - Date.parse(b.vence));
+    const prox = itens[0];
+    const dias = Math.floor((Date.parse(prox.vence) - Date.now()) / 86_400_000);
+    const quando = new Date(prox.vence).toLocaleDateString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+    if (dias < 0) return fora(`${prox.nome} venceu em ${quando}`);
+    if (dias < 30) return aviso(`${prox.nome} vence em ${dias} dias`);
+    return ok(`o próximo vence em ${quando}`);
   },
 
   /** R2 pelo binding do próprio Worker (mesma conta Cloudflare): listar 1 objeto. */
