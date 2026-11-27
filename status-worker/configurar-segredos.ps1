@@ -77,6 +77,15 @@ Gravar 'GITHUB_STATUS_TOKEN' (gh auth token --user bruno-storeapps)
 Gravar 'GITHUB_STATUS_TOKEN_OXE' (gh auth token --user BrunoCarvalhoSI)
 
 Write-Host ""
+Write-Host "3b) Apple: chave do App Store Connect (a mesma que envia as versões)" -ForegroundColor Cyan
+$p8 = Join-Path $env:USERPROFILE '.keys\AuthKey_DSUJS39D7G.p8'
+if (Test-Path $p8) {
+  Gravar 'ASC_KEY_P8' (Get-Content -LiteralPath $p8 -Raw)
+} else {
+  Write-Host "  - chave .p8 não encontrada em $p8, pulado" -ForegroundColor Yellow
+}
+
+Write-Host ""
 Write-Host "4) Chaves que só você tem (cole quando pedir)" -ForegroundColor Cyan
 Gravar 'SMSFIRE_USERNAME_VUMBORALA' (Perguntar 'SMSFIRE_USERNAME_VUMBORALA' 'SMSFIRE_USERNAME do VumboraLá, no .env do servidor')
 Gravar 'SMSFIRE_TOKEN_VUMBORALA' (Perguntar 'SMSFIRE_TOKEN_VUMBORALA' 'SMSFIRE_API_TOKEN do VumboraLá')
