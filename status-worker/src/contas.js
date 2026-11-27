@@ -177,7 +177,12 @@ export const CHECAGENS = {
 
   /** Firebase Cloud Messaging: autentica a conta de serviço e faz um envio de teste (validate_only). */
   async fcm(env, s) {
-    const sa = JSON.parse(env[s.segredos[0]]);
+    // O valor pode vir como está no .env: entre aspas simples ou duplas.
+    let bruto = String(env[s.segredos[0]]).trim();
+    if (/^(['"]).*\1$/s.test(bruto)) bruto = bruto.slice(1, -1);
+    let sa;
+    try { sa = JSON.parse(bruto); } catch { return fora('JSON da conta de serviço inválido (cole o conteúdo do arquivo)'); }
+    if (!sa.private_key || !sa.client_email) return fora('JSON sem private_key/client_email');
     const agora = Math.floor(Date.now() / 1000);
     const b64 = (o) => btoa(typeof o === 'string' ? o : JSON.stringify(o)).replace(/=+$/, '').replace(/\+/g, '-').replace(/\//g, '_');
     const cab = b64({ alg: 'RS256', typ: 'JWT' });
