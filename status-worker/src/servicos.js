@@ -71,7 +71,7 @@ export const SERVICOS = [
   { id: 'querido-hml-api', grupo: 'querido', nome: 'API · homologação', url: 'https://api-hml.queridodelivery.com.br/api/health', esperado: { status: [200], texto: '"status":"ok"' }, sobDemanda: true },
   { id: 'querido-hml-admin', grupo: 'querido', nome: 'Painel da plataforma · homologação', url: 'https://admin-hml.queridodelivery.com.br/', esperado: { status: [200, 302, 307, 308] }, sobDemanda: true },
   // Domínio ainda em registro no Registro.br (comprado em 26/11)
-  { id: 'querido-dominio', grupo: 'querido', nome: 'Domínio queridodelivery.com.br', tipo: 'rdap', dominio: 'queridodelivery.com.br', sobDemanda: true },
+  { id: 'querido-dominio', grupo: 'querido', nome: 'Domínio queridodelivery.com.br', tipo: 'rdap', intervaloMin: 720, dominio: 'queridodelivery.com.br', sobDemanda: true },
   { id: 'querido-hml-parceiro', grupo: 'querido', nome: 'Painel do parceiro · homologação', url: 'https://parceiro-hml.queridodelivery.com.br/', esperado: { status: [200, 302, 307, 308] }, sobDemanda: true },
 
   // Provedores: a página de status de cada um, só nos componentes que usamos.
@@ -86,10 +86,10 @@ export const SERVICOS = [
   { id: 'prov-hostinger', grupo: 'provedores', nome: 'Hostinger (servidor do Oxe)', tipo: 'statuspage', url: 'https://statuspage.hostinger.com/api/v2/components.json', componentes: ['BR Datacenter', 'BR-ASC Cloud servers (São Paulo, BR)'] },
 
   // Domínios: vencimento no Registro.br (menos de 30 dias = aviso; menos de 7 = fora)
-  { id: 'dom-storeapps', grupo: 'dominios', nome: 'storeapps.com.br', tipo: 'rdap', dominio: 'storeapps.com.br' },
-  { id: 'dom-vumborala', grupo: 'dominios', nome: 'vumborala.com.br', tipo: 'rdap', dominio: 'vumborala.com.br' },
-  { id: 'dom-hubgamers', grupo: 'dominios', nome: 'hubgamers.com.br', tipo: 'rdap', dominio: 'hubgamers.com.br' },
-  { id: 'dom-oxesushi', grupo: 'dominios', nome: 'oxesushi.com.br', tipo: 'rdap', dominio: 'oxesushi.com.br' },
+  { id: 'dom-storeapps', grupo: 'dominios', nome: 'storeapps.com.br', tipo: 'rdap', intervaloMin: 720, dominio: 'storeapps.com.br' },
+  { id: 'dom-vumborala', grupo: 'dominios', nome: 'vumborala.com.br', tipo: 'rdap', intervaloMin: 720, dominio: 'vumborala.com.br' },
+  { id: 'dom-hubgamers', grupo: 'dominios', nome: 'hubgamers.com.br', tipo: 'rdap', intervaloMin: 720, dominio: 'hubgamers.com.br' },
+  { id: 'dom-oxesushi', grupo: 'dominios', nome: 'oxesushi.com.br', tipo: 'rdap', intervaloMin: 720, dominio: 'oxesushi.com.br' },
 
   // ---- Contas, saldos e cotas (tipo conta: precisa dos segredos do Worker) ----
   // StoreApps / infraestrutura comum

@@ -12,7 +12,7 @@ import { CHECAGENS } from './contas.js';
 
 const CHAVE = 'estado-v1';
 // Muda a cada mudança nas checagens: resultado de versão anterior não é reaproveitado.
-const VERSAO = 3;
+const VERSAO = 7;
 const DIAS = 90;
 const TIMEOUT_MS = 10_000;
 const LENTO_MS = 4_000;
@@ -43,6 +43,8 @@ async function verificarEspecial(s, inicio) {
   const url = s.tipo === 'rdap' ? `https://rdap.registro.br/domain/${s.dominio}` : s.url;
   const r = await fetch(url, { signal: AbortSignal.timeout(TIMEOUT_MS), headers: { accept: 'application/json', 'user-agent': 'StoreApps-Status/1.0' } });
   const ms = Date.now() - inicio;
+  // Registro.br e cia. limitam consultas: recusa não é o serviço fora, é "tente depois".
+  if (r.status === 403 || r.status === 429) return { estado: 'degradado', codigo: r.status, ms, detalhe: 'consulta limitada, tentando depois', manterAnterior: true };
   if (!r.ok) return { estado: 'offline', codigo: r.status, ms, detalhe: `página de status respondeu ${r.status}` };
   const d = JSON.parse(await texto(r));
 
@@ -88,7 +90,14 @@ async function verificar(s, env) {
   if (s.tipo === 'conta') {
     if (s.segredos.some((n) => !env[n])) return { estado: 'desligado', codigo: 0, ms: 0, detalhe: 'falta configurar', naoConfigurado: true };
     try {
-      const r = await CHECAGENS[s.checagem](env, s);
+      // Chave copiada do .env pode vir entre aspas: tira antes de usar.
+      const limpo = new Proxy(env, {
+        get(alvo, nome) {
+          const v = alvo[nome];
+          return typeof v === 'string' ? v.trim().replace(/^(['"])([\s\S]*)\1$/, '$2') : v;
+        },
+      });
+      const r = await CHECAGENS[s.checagem](limpo, s);
       return { codigo: 0, ...r, ms: Date.now() - inicio };
     } catch (e) {
       return { estado: 'offline', codigo: 0, ms: Date.now() - inicio, detalhe: e?.name === 'TimeoutError' ? 'sem resposta em 10 s' : `falhou ao checar: ${String(e?.message || e).slice(0, 80)}` };
@@ -175,7 +184,13 @@ async function rodada(env, lote = 0) {
       const { desde, ...ultimo } = antes;
       return [s, ultimo];
     }
-    return [s, { ...(await verificar(s, env)), verificadoEm: agora, versao: VERSAO }];
+    const novo = await verificar(s, env);
+    // Consulta recusada (limite do outro lado): fica valendo o último resultado bom, e tenta de novo na próxima.
+    if (novo.manterAnterior && antes && !antes.manterAnterior && antes.estado !== 'offline') {
+      const { desde, ...ultimo } = antes;
+      return [s, { ...ultimo, verificadoEm: 0 }];
+    }
+    return [s, { ...novo, verificadoEm: novo.manterAnterior ? 0 : agora, versao: VERSAO }];
   }));
   const porId = Object.fromEntries(resultados.map(([s, r]) => [s.id, r]));
   for (const par of resultados) {
